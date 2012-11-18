@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="bc-utility" default="jar">
+
+	<property name="dir.src" value="src" />
+	<property name="dir.classes" value="bin" />
+	<property name="dir.lib" value="lib" />
+	<property name="dir.lib.native" value="lib" />
+	<property name="dir.out" value="out" />
+
+	<property name="jar.version" value="0.0.1" />
+	<property name="jar.name" value="bc-utility-${jar.version}" />
+
+	<path id="libs">
+		<fileset dir="${dir.lib}">
+			<include name="**/*.jar" />
+		</fileset>
+	</path>
+
+	<target name="-clean">
+		<delete dir="${dir.classes}" />
+		<delete dir="${dir.out}" />
+	</target>
+
+	<target name="-prepare" depends="-clean">
+		<mkdir dir="${dir.classes}" />
+	</target>
+
+	<target name="-compile" depends="-prepare">
+		<javac destdir="${dir.classes}" encoding="UTF-8" source="1.6" target="1.6" debug="true">
+			<src path="${dir.src}" />
+			<classpath refid="libs" />
+		</javac>
+	</target>
+
+	<target name="jar" depends="-compile">
+		<mkdir dir="${dir.out}" />
+
+		<jar destfile="${dir.out}/${jar.name}.jar">
+			<fileset dir="${dir.classes}" includes="**/*.class" />
+			<fileset dir="${dir.lib.native}" includes="**/*.dll" />
+			<zipgroupfileset dir="${dir.lib}" includes="**/*.jar" />
+		</jar>
+	</target>
+
+</project>

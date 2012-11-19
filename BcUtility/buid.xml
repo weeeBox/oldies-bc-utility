@@ -8,7 +8,7 @@
 	<property name="dir.lib.native" value="lib" />
 	<property name="dir.out" value="out" />
 
-	<property name="jar.version" value="0.0.1" />
+	<property name="jar.version" value="0.0.2" />
 	<property name="jar.name" value="bc-utility-${jar.version}" />
 
 	<path id="libs">

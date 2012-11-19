@@ -1,10 +1,14 @@
 package bc.utils.filesystem;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import bc.utils.runtime.NativeLibLoader;
 
@@ -154,7 +158,62 @@ public class FileUtils
 			file.delete();
 		}
 	}
+	
+	public static boolean delete(File file)
+	{
+		if (file.exists())
+		{
+			if (file.isDirectory())
+			{
+				File[] files = file.listFiles();
+				for (File childFile : files) 
+				{
+					boolean succeed = delete(childFile);
+					if (!succeed)
+					{
+						return false;
+					}
+				}
+			}
+			return file.delete();
+		}
+		return true;
+	}
 
+	public static List<String> readFile(File file) throws IOException
+	{
+		return readFile(file, null);
+	}
+	
+	public static List<String> readFile(File file, StringFilter filter) throws IOException
+	{
+		BufferedReader reader = null;
+		try
+		{
+			reader = new BufferedReader(new FileReader(file));
+			List<String> lines = new ArrayList<String>();
+
+			String line;
+			while ((line = reader.readLine()) != null)
+			{	
+				String filteredLine = filter != null ? filter.filter(line) : line;
+				if (filteredLine != null)
+				{
+					lines.add(line);
+				}
+			}
+			return lines;
+		}
+		finally
+		{
+			if (reader != null)
+			{
+				reader.close();
+			}
+		}
+	}
+
+	
 	public static String getFileExt(File pathname) 
 	{
 		String filename = pathname.getName();

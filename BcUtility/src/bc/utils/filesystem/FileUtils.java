@@ -21,9 +21,18 @@ public class FileUtils
 	
 	static
 	{
-		String arcDataModel = System.getProperty("sun.arch.data.model");
-		String libName = "64".equals(arcDataModel) ? LIB_NAME_X64 : LIB_NAME_X86;
-		NativeLibLoader.loadLibrary(libName);
+		if (isRunningWindows())
+		{
+			String arcDataModel = System.getProperty("sun.arch.data.model");
+			String libName = "64".equals(arcDataModel) ? LIB_NAME_X64 : LIB_NAME_X86;
+			NativeLibLoader.loadLibrary(libName);
+		}
+	}
+	
+	private static boolean isRunningWindows()
+	{
+		String osName = System.getProperty("os.name");
+		return osName.contains("Windows");
 	}
 	
 	public static String makeRelativePath(File parent, File child)

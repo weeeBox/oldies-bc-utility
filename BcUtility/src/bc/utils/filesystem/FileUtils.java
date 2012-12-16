@@ -4,9 +4,12 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,9 +24,18 @@ public class FileUtils
 	
 	static
 	{
-		String arcDataModel = System.getProperty("sun.arch.data.model");
-		String libName = "64".equals(arcDataModel) ? LIB_NAME_X64 : LIB_NAME_X86;
-		NativeLibLoader.loadLibrary(libName);
+		if (isRunningWindows())
+		{
+			String arcDataModel = System.getProperty("sun.arch.data.model");
+			String libName = "64".equals(arcDataModel) ? LIB_NAME_X64 : LIB_NAME_X86;
+			NativeLibLoader.loadLibrary(libName);
+		}
+	}
+	
+	private static boolean isRunningWindows()
+	{
+		String osName = System.getProperty("os.name");
+		return osName.contains("Windows");
 	}
 	
 	public static String makeRelativePath(File parent, File child)
@@ -212,7 +224,31 @@ public class FileUtils
 			}
 		}
 	}
-
+	
+	public static void writeFile(File file, List<String> lines, String encoding) throws IOException, UnsupportedEncodingException
+	{
+		if (file.exists() && !file.isFile())
+		{
+			throw new IOException("Unable to write to a file: " + file);
+		}
+		
+		PrintStream out = null;
+		try 
+		{
+			out = new PrintStream(file, encoding);
+			for (String line : lines) 
+			{
+				out.println(line);
+			}
+		} 
+		finally 
+		{
+			if (out != null) 
+			{
+				out.close();
+			}
+		}
+	}
 	
 	public static String getFileExt(File pathname) 
 	{

@@ -199,7 +199,7 @@ public class FileUtils
 				String filteredLine = filter != null ? filter.filter(line) : line;
 				if (filteredLine != null)
 				{
-					lines.add(line);
+					lines.add(filteredLine);
 				}
 			}
 			return lines;
